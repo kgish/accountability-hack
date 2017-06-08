@@ -1,8 +1,14 @@
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
-
 import Ember from 'ember';
+import config from 'accountability-hack/config/environment';
 
 export default Ember.Controller.extend({
+
+    apiHost: config.apiHost,
+    apiNamespace: config.apiNamespace,
+    apiUrl: Ember.computed('apiHost', 'apiNamespace', function(){
+       return `${this.get('apiHost')}/${this.get('apiNamespace')}`;
+    }),
 
     years: [],
     year: 0,
@@ -62,7 +68,17 @@ export default Ember.Controller.extend({
        return  result ? ' disabled' : '';
     }),
 
-    labels: null,
+    labels: [],
+    label: 'Select',
+
+    documents: [],
+
+    disabledDocuments: Ember.computed('label', function(){
+        let label = this.get('label'),
+            result = (label === 'Select');
+        console.log('disabledDocuments() => ' + result);
+        return  result ? ' disabled' : '';
+    }),
 
     actions: {
         selectYear(year) {
@@ -104,6 +120,12 @@ export default Ember.Controller.extend({
             this.set('limit', limit);
             this._showValues();
         },
+        selectLabel(n) {
+            console.log('selectLabel('+n+')');
+            this.set('label', this.get('labels')[n]);
+            Ember.$('#label option:contains("Select")').remove();
+            // this._showValues();
+        },
         submit() {
             this._showValues();
             let year = parseInt(this.get('year')),
@@ -122,10 +144,10 @@ export default Ember.Controller.extend({
                 '&limit=' + limit +
                 '&format=json';
 
-            console.log(url_documents);
+            console.log('url_documents', url_documents);
             Ember.$.get(url_documents).then(
                 data => {
-                    console.log(data);
+                    console.log('url_documents data', data);
                     let url_labels = 'http://www.openspending.nl/api/v1/labels/' +
                         '?document_id=' + data.objects[0].id +
                         '&limit=500' +
@@ -133,10 +155,12 @@ export default Ember.Controller.extend({
                     console.log(url_labels);
                     Ember.$.get(url_labels).then(
                         data => {
-                            console.log(data);
+                            console.log('url_labels data', data);
                             let objs = data.objects.filter(function (l) { return (l.direction == direction);}),
+                                main2slug = {},
+                                main_functions,
                                 labels = [];
-                            console.log(objs);
+                            console.log('url_labels objs', objs);
 
                             objs.forEach(function(obj){
                                 labels.push({
@@ -150,7 +174,34 @@ export default Ember.Controller.extend({
                                 });
                             });
 
-                            this.set('labels', labels);
+                            main_functions = labels.filter(function (l) { return l.type === 'main';});
+                            for (let idx in main_functions) {
+                                main2slug[main_functions[idx]['code']] = main_functions[idx]['slug'];
+                            }
+
+                            console.log('url_labels main2slug', main2slug);
+
+                            Ember.$.each(labels, function (idx, item) {
+                                let full_url;
+                                if (item.type === 'main') {
+                                    full_url = 'hoofdfuncties/' + item.slug + '/functies/';
+                                } else if (item.type === 'sub') {
+                                    if (item.code[0] !== 'A') {
+                                        let m2s = main2slug[item.code[0]];
+                                        if (m2s) {
+                                            full_url = 'hoofdfuncties/' + m2s + '/functies/' + item.slug + '/categorieen/';
+                                        } else {
+                                            console.error('m2s['+item.code[0]+'] is undefined!');
+                                        }
+                                    }
+                                } else {
+                                  full_url = 'categorieen/' + item.slug + '/hoofdfuncties/';
+                                }
+
+                                item.full_url = full_url;
+                            });
+
+                            this.set('labels', labels.sortBy('label'));
                         },
                         error => {
                             console.error(error);
@@ -161,6 +212,9 @@ export default Ember.Controller.extend({
                     console.error(error);
                 }
             );
+        },
+        getDocuments() {
+            console.log('getDocuments() called');
         }
     },
 
