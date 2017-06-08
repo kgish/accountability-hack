@@ -18,6 +18,15 @@ export default Ember.Controller.extend({
     kinds: [],
     kind: 'select',
 
+    limits: [
+        { value: 10,  text: '10' },
+        { value: 20,  text: '20' },
+        { value: 50,  text: '30' },
+        { value: 100, text: '100' },
+        { value: 0,   text: 'All' }
+    ],
+    limit: 10,
+
     disabled: Ember.computed('kind', function(){
        let kind = this.get('kind');
        return kind === 'select' ? ' disabled' : '';
@@ -37,11 +46,16 @@ export default Ember.Controller.extend({
             this.set('kind', kind);
             Ember.$('#kind option:contains("select")').remove();
         },
+        selectLimit(limit) {
+            //console.log('selectLimit('+limit+')');
+            this.set('limit', limit);
+        },
         submit() {
             let year = this.get('year'),
                 period = this.get('period'),
-                kind = this.get('kind');
-            console.log('submit() year=' + year + ', period=' + period + ', kind=' + kind);
+                kind = this.get('kind'),
+                limit = this.get('limit');
+            console.log('submit() year=' + year + ', period=' + period + ', kind=' + kind + ', limit=' + limit);
         }
     }
 });

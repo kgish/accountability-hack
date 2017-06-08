@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
     model() {
-        return Ember.$.get('https://www.openspending.nl/api/v1/aggregations/documents/?format=json&limit=0');
+        return Ember.$.get('http://www.openspending.nl/api/v1/aggregations/documents/?format=json&limit=0');
         //var governments_url = 'http://www.openspending.nl/api/v1/governments/?kind=' + OpenspendingListify.kind + '&limit=500&format=json';
     },
 
