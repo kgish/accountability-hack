@@ -28,7 +28,7 @@
             <label for="kind" class="col-sm-2 col-form-label">Kind:</label>
             <div class="col-sm-10">
                 {{#x-select value=kind id="kind" class="custom-select" action="selectKind" as |xs|}}
-                    {{#xs.option value='Please select'}}Please select{{/xs.option}}
+                    {{#xs.option value='select'}}select{{/xs.option}}
                     {{#each kinds as |kind|}}
                         {{#xs.option value=kind}}{{kind}}{{/xs.option}}
                     {{/each}}
