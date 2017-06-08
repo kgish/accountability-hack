@@ -70,14 +70,36 @@ export default Ember.Controller.extend({
 
     labels: [],
     label: 'Select',
+    label_types: [],
+    label_type: 'Select',
 
     documents: [],
 
-    disabledDocuments: Ember.computed('label', function(){
-        let label = this.get('label'),
-            result = (label === 'Select');
+    disabledDocuments: Ember.computed('label_type', 'label', function(){
+        let label_type = this.get('label_type'),
+            label = this.get('label'),
+            result = (
+                label_type === 'Select' ||
+                label === 'Select'
+            );
         console.log('disabledDocuments() => ' + result);
         return  result ? ' disabled' : '';
+    }),
+
+    filteredLabels: Ember.computed('label_type', function(){
+        let label_type = this.get('label_type'),
+            filteredLabels = [];
+        console.log('filteredLabels label_type='+label_type);
+        if (label_type !== 'Select') {
+            let labels = this.get('labels');
+            labels.forEach(label => {
+                if (label.full_url && label.type === label_type) {
+                    filteredLabels.push(label);
+                }
+            });
+        }
+        console.log('filteredLabels return', filteredLabels);
+        return filteredLabels;
     }),
 
     actions: {
@@ -124,7 +146,13 @@ export default Ember.Controller.extend({
             console.log('selectLabel('+n+')');
             this.set('label', this.get('labels')[n]);
             Ember.$('#label option:contains("Select")').remove();
-            // this._showValues();
+            this._showValues();
+        },
+        selectLabelType(label_type) {
+            console.log('selectLabelType('+label_type+')');
+            this.set('label_type', label_type);
+            Ember.$('#label_type option:contains("Select")').remove();
+            this._showValues();
         },
         submit() {
             this._showValues();
@@ -133,7 +161,7 @@ export default Ember.Controller.extend({
                 kind = this.get('kind'),
                 plan = this.get('plan'),
                 direction = this.get('direction'),
-                order = this.get('order'),
+                // order = this.get('order'),
                 limit = parseInt(this.get('limit')),
                 url_documents = 'http://www.openspending.nl/api/v1/documents/' +
                 '?government__kind=' + kind +
@@ -156,25 +184,34 @@ export default Ember.Controller.extend({
                     Ember.$.get(url_labels).then(
                         data => {
                             console.log('url_labels data', data);
-                            let objs = data.objects.filter(function (l) { return (l.direction == direction);}),
+                            let objs = data.objects.filter(function (l) { return (l.direction === direction);}),
                                 main2slug = {},
                                 main_functions,
+                                label_types = [],
                                 labels = [];
                             console.log('url_labels objs', objs);
 
                             objs.forEach(function(obj){
+                                if (label_types.indexOf(obj.type) === -1) {
+                                   label_types.push(obj.type);
+                                }
                                 labels.push({
                                     code: obj.code,
                                     direction: obj.direction,
                                     document_id: obj.document_id,
-                                    label: obj.label,
+                                    label: obj.label.toLowerCase(),
                                     resource_uri: obj.resource_uri,
                                     slug: obj.slug,
                                     type: obj.type
                                 });
                             });
 
+                            label_types = label_types.sort();
+                            console.log('url_labels types='+JSON.stringify(label_types));
+                            this.set('label_types', label_types);
+
                             main_functions = labels.filter(function (l) { return l.type === 'main';});
+                            console.log('url_labels main_functions', main_functions);
                             for (let idx in main_functions) {
                                 main2slug[main_functions[idx]['code']] = main_functions[idx]['slug'];
                             }
@@ -218,7 +255,8 @@ export default Ember.Controller.extend({
         }
     },
 
-    // Private
+    // Private stuff
+
     _showValues() {
         let year = this.get('year'),
             period = this.get('period'),
@@ -226,7 +264,9 @@ export default Ember.Controller.extend({
             plan = this.get('plan'),
             direction = this.get('direction'),
             order = this.get('order'),
-            limit = this.get('limit');
+            limit = this.get('limit'),
+            label_type = this.get('label_type'),
+            label = this.get('label');
         console.log('submit() ' +
             'year=' + year +
             ', period=' + period +
@@ -234,7 +274,9 @@ export default Ember.Controller.extend({
             ', plan=' + plan +
             ', direction=' + direction +
             ', order=' + order +
-            ', limit=' + limit
+            ', limit=' + limit +
+            ', label_type=' + label_type +
+            ', label=' + label
         );
     }
 });
