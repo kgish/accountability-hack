@@ -20,7 +20,7 @@ module.exports = function(environment) {
         APP: {
           // Here you can pass flags/options to your application instance
           // when it is created
-          title: 'Accountability-Hack'
+          title: 'Mijn-Begroting'
         },
 
         apiHost: 'http://www.openspending.nl',

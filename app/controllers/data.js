@@ -23,25 +23,25 @@ export default Ember.Controller.extend({
     period: 0,
 
     kinds: [ 'subcounty', 'county', 'province', 'watership', 'municipal arrangement', 'benchmark' ],
-    kind: 'Select',
+    kind: config.environment === 'development' ? 'county' : 'Select',
 
     plans: [
         { value: 'budget', text: 'Budget' },
         { value: 'spending', text: 'Spending' },
     ],
-    plan: 'Select',
+    plan: config.environment === 'development' ? 'budget' : 'Select',
 
     directions: [
         { value: 'in', text: 'In' },
         { value: 'out', text: 'Out' },
     ],
-    direction: 'Select',
+    direction: config.environment === 'development' ? 'in' : 'Select',
 
     orders: [
         { value: 'asc', text: 'Ascending' },
         { value: 'desc', text: 'Descending' },
     ],
-    order: 'Select',
+    order: config.environment === 'development' ? 'asc' : 'Select',
 
     limits: [
         { value: 1,   text: '1' },
@@ -249,7 +249,18 @@ export default Ember.Controller.extend({
             );
         },
         getDocuments() {
-            console.log('getDocuments() called');
+            let kind = this.get('kind'),
+                year = parseInt(this.get('year')),
+                period = parseInt(this.get('period')),
+                plan = this.get('plan'),
+                url = 'http://www.openspending.nl/api/v1/documents/' +
+                    '?government__kind=' + kind +
+                    (year ? '&year=' + year : '') +
+                    '&period=' + period +
+                    '&plan=' + plan +
+                    '&limit=500' +
+                    '&format=json';
+            console.log('getDocuments() url='+url);
         }
     },
 
