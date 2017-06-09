@@ -289,11 +289,9 @@ export default Ember.Controller.extend({
                 Ember.$.get(url_getdocs),
                 Ember.$.get(url_entries),
             ).then(
-
-            );
-            Ember.$.get(url_getdocs).then(
-                data => {
-                    console.log('url_getdocs data', data);
+                (docs, entries) => {
+                    console.log('url_getdocs data', docs);
+                    console.log('url_getdocs entries', entries);
 
                     Ember.run.once(this, () => { this.set('loadingDocuments', false)});
                 },
@@ -302,7 +300,6 @@ export default Ember.Controller.extend({
                     this.set('loadingDocuments', false);
                 }
             );
-
         }
     },
 
