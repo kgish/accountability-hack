@@ -8,6 +8,10 @@ body {
   padding-top: 5rem;
 }
 
+.application.demo .container {
+  width: auto;
+}
+
 .main-wrapper {
   background: #fff;
   padding: 3rem 1.5rem;
@@ -25,4 +29,9 @@ body {
   .fa {
     color: gray;
   }
+}
+
+select {
+  margin-left: 5px;
+  margin-right: 15px;
 }
