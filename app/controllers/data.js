@@ -263,15 +263,34 @@ export default Ember.Controller.extend({
                 year = parseInt(this.get('year')),
                 period = parseInt(this.get('period')),
                 plan = this.get('plan'),
+                label = this.get('label'),
+                direction = this.get('direction'),
                 url_getdocs = 'http://www.openspending.nl/api/v1/documents/' +
                     '?government__kind=' + kind +
                     (year ? '&year=' + year : '') +
                     '&period=' + period +
                     '&plan=' + plan +
-                    '&limit=500' +
-                    '&format=json';
-            console.log('getDocuments() url='+url_getdocs);
+                    '&limit=50' +
+                    '&format=json',
+                url_entries = 'http://www.openspending.nl/api/v1/aggregations/entries/' +
+                  '?type=' + plan +
+                  (year ? '&year=' + year : '') +
+                  '&period=' + period +
+                  '&code_' + label.type + '=' + label.code +
+                  '&direction=' + direction +
+                  '&limit=1' +
+                '&format=json';
+
+            console.log('getDocuments() url_getdocs='+url_getdocs);
+            console.log('getDocuments() url_entries='+url_entries);
+
             this.set('loadingDocuments', true);
+            Ember.$.when(
+                Ember.$.get(url_getdocs),
+                Ember.$.get(url_entries),
+            ).then(
+
+            );
             Ember.$.get(url_getdocs).then(
                 data => {
                     console.log('url_getdocs data', data);
@@ -283,6 +302,7 @@ export default Ember.Controller.extend({
                     this.set('loadingDocuments', false);
                 }
             );
+
         }
     },
 
