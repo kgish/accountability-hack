@@ -1,9 +1,10 @@
 {{#page-header title='Data' description='Have lots of fun exploring interesting data'}}
     <form>
 
-        <div class="form-group row">
-            <label for="year" class="col-sm-2 col-form-label">Year:</label>
-            <div class="col-sm-10">
+        <div class="row">
+
+            <div class="form-group">
+                <label for="year">Year:</label>
                 {{#x-select value=year id="year" class="custom-select" action="selectYear" as |xs|}}
                     {{#xs.option value=0}}All{{/xs.option}}
                     {{#each years as |year|}}
@@ -11,22 +12,18 @@
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="period" class="col-sm-2 col-form-label">Period:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="period">Period:</label>
                 {{#x-select value=period id="period" class="custom-select" action="selectPeriod" as |xs|}}
                     {{#each periods as |period|}}
                         {{#xs.option value=period.value}}{{period.text}}{{/xs.option}}
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="kind" class="col-sm-2 col-form-label">Kind:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="kind">Kind:</label>
                 {{#x-select value=kind id="kind" class="custom-select" action="selectKind" as |xs|}}
                     {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each kinds as |kind|}}
@@ -34,11 +31,9 @@
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="plan" class="col-sm-2 col-form-label">Plan:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="plan">Plan:</label>
                 {{#x-select value=plan id="plan" class="custom-select" action="selectPlan" as |xs|}}
                     {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each plans as |plan|}}
@@ -46,11 +41,9 @@
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="direction" class="col-sm-2 col-form-label">Direction:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="direction">Direction:</label>
                 {{#x-select value=direction id="direction" class="custom-select" action="selectDirection" as |xs|}}
                     {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each directions as |direction|}}
@@ -58,11 +51,9 @@
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="order" class="col-sm-2 col-form-label">Order:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="order">Order:</label>
                 {{#x-select value=order id="order" class="custom-select" action="selectOrder" as |xs|}}
                     {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each orders as |order|}}
@@ -70,28 +61,25 @@
                     {{/each}}
                 {{/x-select}}
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="limit" class="col-sm-2 col-form-label">Limit:</label>
-            <div class="col-sm-10">
+            <div class="form-group">
+                <label for="limit">Limit:</label>
                 {{#x-select value=limit id="limit" class="custom-select" action="selectLimit" as |xs|}}
                     {{#each limits as |limit|}}
                         {{#xs.option value=limit.value}}{{limit.text}}{{/xs.option}}
-                    {{/each}}
+                   {{/each}}
                 {{/x-select}}
             </div>
+
         </div>
 
         <div class="form-group row">
-            <div class="offset-sm-2 col-sm-10">
                 <button class='btn btn-success{{disabled}}' {{action "submit"}}>
                     {{#if loadingLabels}}
                         {{fa-icon 'spinner' spin=true}}
                     {{/if}}
                     Get Labels
                 </button>
-            </div>
         </div>
 
     </form>
