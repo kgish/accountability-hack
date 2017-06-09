@@ -12,6 +12,11 @@ body {
   width: auto;
 }
 
+.with-border {
+  border: 2px solid lightgrey;
+  height: 100px;
+}
+
 .main-wrapper {
   background: #fff;
   padding: 3rem 1.5rem;
