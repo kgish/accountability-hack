@@ -85,7 +85,12 @@
 
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button class='btn btn-success{{disabled}}' {{action "submit"}}>Get Labels</button>
+                <button class='btn btn-success{{disabled}}' {{action "submit"}}>
+                    {{#if loadingLabels}}
+                        {{fa-icon 'spinner' spin=true}}
+                    {{/if}}
+                    Get Labels
+                </button>
             </div>
         </div>
 
@@ -119,10 +124,13 @@
 
             <div class="form-group row">
                 <div class="offset-sm-2 col-sm-10">
-                    <button class='btn btn-success{{disabledDocuments}}' {{action "getDocuments"}}>Get Documents</button>
+                    <button class='btn btn-success{{disabledDocuments}}' {{action "getDocuments"}}>
+                        {{#if loadingDocuments}}
+                            {{fa-icon 'spinner' spin=true}}
+                        {{/if}}
+                        Get Documents</button>
                 </div>
             </div>
-
         </form>
     {{/if}}
 {{/page-header}}
