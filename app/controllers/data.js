@@ -71,7 +71,7 @@ export default Ember.Controller.extend({
     labels: [],
     label: 'Select',
     label_types: [],
-    label_type: 'Select',
+    label_type: 'All',
 
     documents: [],
 
@@ -90,14 +90,12 @@ export default Ember.Controller.extend({
         let label_type = this.get('label_type'),
             filteredLabels = [];
         console.log('filteredLabels label_type='+label_type);
-        if (label_type !== 'Select') {
-            let labels = this.get('labels');
-            labels.forEach(label => {
-                if (label.full_url && label.type === label_type) {
-                    filteredLabels.push(label);
-                }
-            });
-        }
+        let labels = this.get('labels');
+        labels.forEach(label => {
+            if (label.full_url && (label_type === 'All' || label.type === label_type)) {
+                filteredLabels.push(label);
+            }
+        });
         console.log('filteredLabels return', filteredLabels);
         return filteredLabels;
     }),
@@ -238,7 +236,7 @@ export default Ember.Controller.extend({
                                 item.full_url = full_url;
                             });
 
-                            this.set('labels', labels.sortBy('label'));
+                            this.set('labels', labels.sortBy('code'));
                         },
                         error => {
                             console.error(error);

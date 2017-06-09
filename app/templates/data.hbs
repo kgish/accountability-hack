@@ -97,7 +97,7 @@
                 <label for="label_type" class="col-sm-2 col-form-label">Type:</label>
                 <div class="col-sm-10">
                     {{#x-select value=label_type id="label_type" class="custom-select" action="selectLabelType" as |xs|}}
-                        {{#xs.option value='Select'}}Select{{/xs.option}}
+                        {{#xs.option value='All'}}All{{/xs.option}}
                         {{#each label_types as |label_type|}}
                             {{#xs.option value=label_type}}{{label_type}}{{/xs.option}}
                         {{/each}}
