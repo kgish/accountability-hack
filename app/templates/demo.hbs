@@ -12,30 +12,58 @@
 
     {{#if (eq tab 0)}}
 
-        <h2>Intro</h2>
         <p class="lead">Some text goes here</p>
 
         <div class="row">
             <div class="col-md-9 with-border">
-                Sliders
+                <h2>Bestuur en ondersteuning</h2>
+                <input type="range" name="BestuurEnOndersteuning" value="10">
+
+                <h2>Veiligheid</h2>
+                <input type="range" name="Veiligheid" value="50">
+
+                <h2>Verkeer, vervoer en waterstaat</h2>
+                <input type="range" name="VerkeerVervoerWaterstaat" value="12">
+
+                <h2>Economie</h2>
+                <input type="range" name="Economie" value="34">
+
+                <h2>Onderwijs</h2>
+                <input type="range" name="Onderwijs" value="10">
+
+                <h2>Sport, cultuur en recreatie</h2>
+                <input type="range" name="SportCultuurRecreatie" value="78">
+
+                <h2>Sociaal domein</h2>
+                <input type="range" name="SociaalDomein" value="20">
+
+                <h2>Volksgezondheid en milieu</h2>
+                <input type="range" name="VolksgezondheidMilieu" value="90">
+
+                <h2>Volkshuisvesting, ruimtelijke ordening en stedelijke vernieuwing</h2>
+                <input type="range" name="Volkshuisvesting" value="30">
             </div>
             <div class="col-md-3 with-border">
-                Pie chart
+                <img src="assets/images/pie-chart.png"/>
             </div>
         </div>
 
     {{else if (eq tab 1)}}
 
-        <h2>Compare results</h2>
         <p class="lead">Some text goes here</p>
 
         <div class="row">
+            <div class="col-md-9 with-border">
+                <img src="assets/images/vote.png"/>
+            </div>
 
+            <div class="col-md-3 with-border">
+                <img src="assets/images/pie-chart.png"/>
+            </div>
         </div>
 
     {{else if (eq tab 2)}}
 
-        <h2>About</h2>
         <p class="lead">Some text goes here</p>
 
     {{/if}}
