@@ -10,6 +10,9 @@ export default Ember.Controller.extend({
        return `${this.get('apiHost')}/${this.get('apiNamespace')}`;
     }),
 
+    normalisation: 'currency',
+    size: 10,
+
     years: [],
     year: 0,
 
@@ -159,6 +162,7 @@ export default Ember.Controller.extend({
             Ember.$('#label_type option:contains("Select")').remove();
             this._showValues();
         },
+
         submit() {
             this._showValues();
             let year = parseInt(this.get('year')),
@@ -258,6 +262,7 @@ export default Ember.Controller.extend({
                 }
             );
         },
+
         getDocuments() {
             let kind = this.get('kind'),
                 year = parseInt(this.get('year')),
@@ -265,6 +270,9 @@ export default Ember.Controller.extend({
                 plan = this.get('plan'),
                 label = this.get('label'),
                 direction = this.get('direction'),
+                normalisation = this.get('normalisation'),
+                order = this.get('order'),
+                size = parseInt(this.get('size')),
                 url_getdocs = 'http://www.openspending.nl/api/v1/documents/' +
                     '?government__kind=' + kind +
                     (year ? '&year=' + year : '') +
@@ -293,6 +301,29 @@ export default Ember.Controller.extend({
                     console.log('url_getdocs data', docs);
                     console.log('url_getdocs entries', entries);
 
+                    let documents = {};
+                    Ember.$.each(docs[0].objects, function (idx, item) {
+                        documents[item.id] = item;
+                    });
+                    console.log('url_getdocs documents='+JSON.stringify(documents));
+
+                    let results = [],
+                        terms = entries[0].facets.document.terms;
+                        console.log('# terms='+terms.length);
+                        Ember.$.each(terms, (idx, t) => {
+                        if (typeof(documents[t.term]) !== 'undefined') {
+                            let h = {
+                                document: documents[t.term],
+                                government: documents[t.term].government,
+                                total: t.total,
+                                factor: this._get_metric_for(documents[t.term].government, normalisation, year)
+                            };
+                            //console.log('url_getdocs h='+JSON.stringify(h));
+                            results.push(h);
+                        }
+                    });
+                    console.log('url_getdocs results='+JSON.stringify(results));
+                    this._display_documents(this, results, plan, year, period, direction, label, order, size);
                     Ember.run.once(this, () => { this.set('loadingDocuments', false)});
                 },
                 error => {
@@ -326,5 +357,55 @@ export default Ember.Controller.extend({
             ', label_type=' + label_type +
             ', label=' + label
         );
+    },
+
+    _get_metric_for(government, metric_type, year ) {
+        let filtered_results = government.metrics.filter(function (m) { return ((m.metric === metric_type) && (year === 0 || m.year <= year)); });
+        return filtered_results[0].factor;
+    },
+
+     _display_documents(context, results, plan, year, period, direction, label, order, size) {
+        let max_total = Math.max.apply(null, results.map(function (r) { return (r.total / r.factor); })),
+            sorted_results = results.sort(function (a,b) { return ((b.total / (b.factor * 1.0)) - (a.total / (a.factor * 1.0))); }),
+            documents = [];
+
+        if (order === 'asc') {
+            sorted_results = sorted_results.reverse();
+        }
+
+        Ember.$.each(sorted_results.slice(0, size), (idx, item) => {
+            let normalised_total = item.total / (item.factor * 1.0),
+                total_formatted = accounting.formatMoney(normalised_total, "€", 2, ".", ","),
+                openspending_url = context._get_url_for_item(item, plan, year, period, direction, label),
+                government_name = item.government.name,
+                pct = 0;
+
+            if (item.total > 0) {
+                pct = ((item.total / item.factor) * 100.0) / max_total;
+            }
+            documents.push({
+                normalised_total: normalised_total,
+                total_formatted: total_formatted,
+                openspending_url: openspending_url,
+                government_name: government_name,
+                pct: pct
+            })
+        });
+        context.set('documents', documents);
+     },
+
+     _get_url_for_item(item, plan, year, period, direction, label) {
+        let plan2nl = {
+            budget: 'begroting',
+            spending: 'realisatie'
+        };
+        let direction2nl = {
+            in: 'baten',
+            out: 'lasten'
+        };
+        let url = "http://www.openspending.nl/" + item.government.slug + '/';
+        url += plan2nl[plan] + '/' + year + '-' + period + '/';
+        url += direction2nl[direction] + '/' + label.full_url;
+        return url;
     }
 });

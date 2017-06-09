@@ -1,3 +1,43 @@
 {{#page-header title='Demo' description='Let\'s put our heads together and fluff our feathers'}}
-    ...
+
+    <div class="row">
+        <div class='col-md-12'>
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link{{if (eq tab 0) ' active' ''}}" href="#" {{action 'selectTab' 0}}>Intro</a></li>
+                <li class="nav-item"><a class="nav-link{{if (eq tab 1) ' active' ''}}" href="#" {{action 'selectTab' 1}}>Compare Results</a></li>
+                <li class="nav-item"><a class="nav-link{{if (eq tab 2) ' active' ''}}" href="#" {{action 'selectTab' 2}}>About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    {{#if (eq tab 0)}}
+
+        <h2>Intro</h2>
+        <p class="lead">Some text goes here</p>
+
+        <div class="row">
+            <div class="col-md-9 with-border">
+                Sliders
+            </div>
+            <div class="col-md-3 with-border">
+                Pie chart
+            </div>
+        </div>
+
+    {{else if (eq tab 1)}}
+
+        <h2>Compare results</h2>
+        <p class="lead">Some text goes here</p>
+
+        <div class="row">
+
+        </div>
+
+    {{else if (eq tab 2)}}
+
+        <h2>About</h2>
+        <p class="lead">Some text goes here</p>
+
+    {{/if}}
+
 {{/page-header}}
