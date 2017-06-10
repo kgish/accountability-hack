@@ -1,8 +1,10 @@
 import Ember from 'ember';
+import config from 'accountability-hack/config/environment';
 
 export default Ember.Route.extend({
     model() {
-        return Ember.$.get('http://www.openspending.nl/api/v1/aggregations/documents/?format=json&limit=0');
+        let apiUrl = `${config.apiHost}/${config.apiNamespace}`;
+        return Ember.$.get(apiUrl + '/aggregations/documents/?format=json&limit=0');
     },
 
     setupController(controller, model) {
@@ -10,3 +12,4 @@ export default Ember.Route.extend({
         controller.set('years', years);
     }
 });
+

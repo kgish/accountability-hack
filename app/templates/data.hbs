@@ -25,7 +25,6 @@
             <div class="form-group">
                 <label for="kind">Kind:</label>
                 {{#x-select value=kind id="kind" class="custom-select" action="selectKind" as |xs|}}
-                    {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each kinds as |kind|}}
                         {{#xs.option value=kind}}{{capitalize-words kind}}{{/xs.option}}
                     {{/each}}
@@ -35,7 +34,6 @@
             <div class="form-group">
                 <label for="plan">Plan:</label>
                 {{#x-select value=plan id="plan" class="custom-select" action="selectPlan" as |xs|}}
-                    {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each plans as |plan|}}
                         {{#xs.option value=plan.value}}{{plan.text}}{{/xs.option}}
                     {{/each}}
@@ -45,7 +43,6 @@
             <div class="form-group">
                 <label for="direction">Direction:</label>
                 {{#x-select value=direction id="direction" class="custom-select" action="selectDirection" as |xs|}}
-                    {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each directions as |direction|}}
                         {{#xs.option value=direction.value}}{{direction.text}}{{/xs.option}}
                     {{/each}}
@@ -55,7 +52,6 @@
             <div class="form-group">
                 <label for="order">Order:</label>
                 {{#x-select value=order id="order" class="custom-select" action="selectOrder" as |xs|}}
-                    {{#xs.option value='Select'}}Select{{/xs.option}}
                     {{#each orders as |order|}}
                         {{#xs.option value=order.value}}{{order.text}}{{/xs.option}}
                     {{/each}}
@@ -74,15 +70,41 @@
         </div>
 
         <div class="form-group row">
-                <button class='btn btn-success{{disabled}}' {{action "submit"}}>
+                <button class='btn btn-success{{disabledLabels}}' {{action "getLabels"}}>
                     {{#if loadingLabels}}
                         {{fa-icon 'spinner' spin=true}}
                     {{/if}}
-                    Get Labels
+                    Labels
+                </button>
+                <button class='btn btn-success{{disabledGovernments}}' {{action "getGovernments"}}>
+                    {{#if loadingGovernments}}
+                        {{fa-icon 'spinner' spin=true}}
+                    {{/if}}
+                    Governments
                 </button>
         </div>
 
     </form>
+
+    {{#if governments.length}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each governments as |g|}}
+                    <tr>
+                        <td>{{g.code}}</td>
+                        <td>{{g.name}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{/if}}
+
 
     {{#if labels.length}}
         <form>
@@ -116,7 +138,7 @@
                         {{#if loadingDocuments}}
                             {{fa-icon 'spinner' spin=true}}
                         {{/if}}
-                        Get Documents</button>
+                        Documents</button>
                 </div>
             </div>
         </form>

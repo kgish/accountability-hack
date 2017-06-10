@@ -4,10 +4,8 @@ import config from 'accountability-hack/config/environment';
 
 export default Ember.Controller.extend({
 
-    apiHost: config.apiHost,
-    apiNamespace: config.apiNamespace,
     apiUrl: Ember.computed('apiHost', 'apiNamespace', function(){
-       return `${this.get('apiHost')}/${this.get('apiNamespace')}`;
+       return `${config.apiHost}/${config.apiNamespace}`;
     }),
 
     normalisation: 'currency',
@@ -25,26 +23,26 @@ export default Ember.Controller.extend({
     ],
     period: 0,
 
-    kinds: [ 'subcounty', 'county', 'province', 'watership', 'municipal arrangement', 'benchmark' ],
-    kind: config.environment === 'development' ? 'county' : 'Select',
+    kinds: ['subcounty', 'county', 'province', 'watership', 'municipal arrangement', 'benchmark'],
+    kind: 'county',
 
     plans: [
         { value: 'budget', text: 'Budget' },
         { value: 'spending', text: 'Spending' },
     ],
-    plan: config.environment === 'development' ? 'budget' : 'Select',
+    plan: 'budget',
 
     directions: [
         { value: 'in', text: 'In' },
         { value: 'out', text: 'Out' },
     ],
-    direction: config.environment === 'development' ? 'in' : 'Select',
+    direction: 'in',
 
     orders: [
         { value: 'asc', text: 'Ascending' },
         { value: 'desc', text: 'Descending' },
     ],
-    order: config.environment === 'development' ? 'asc' : 'Select',
+    order: 'asc',
 
     limits: [
         { value: 1,   text: '1' },
@@ -54,20 +52,12 @@ export default Ember.Controller.extend({
         { value: 100, text: '100' },
         { value: 0,   text: 'No limit' }
     ],
-    limit: 1,
+    limit: 10,
 
-    disabled: Ember.computed('kind', 'plan', 'order', 'direction', function(){
-        let kind = this.get('kind'),
-            plan = this.get('plan'),
-            order = this.get('order'),
-            direction = this.get('direction'),
-            loading = this.get('loadingLabels'),
+    disabledLabels: Ember.computed('label', 'loadingLabels', function(){
+        let loading = this.get('loadingLabels'),
             result = (
-                loading ||
-                kind === 'Select' ||
-                plan === 'Select' ||
-                order === 'Select' ||
-                direction === 'Select'
+                loading
             );
         console.log('disabled() => ' + result);
        return  result ? ' disabled' : '';
@@ -80,20 +70,28 @@ export default Ember.Controller.extend({
 
     documents: [],
 
-    disabledDocuments: Ember.computed('label_type', 'label', 'loadingDocuments', function(){
-        let label_type = this.get('label_type'),
-            label = this.get('label'),
+    disabledDocuments: Ember.computed('loadingDocuments', function(){
+        let label = this.get('label'),
             loading = this.get('loadingDocuments'),
             result = (
-                loading ||
-                label_type === 'Select' ||
-                label === 'Select'
+                label === 'Select' ||
+                loading
             );
         console.log('disabledDocuments() => ' + result);
         return  result ? ' disabled' : '';
     }),
 
+    disabledGovernments: Ember.computed('loadingGovernments', function(){
+        let loading = this.get('loadingGovernments'),
+            result = (
+                loading
+            );
+        console.log('disabledGovernments() => ' + result);
+        return  result ? ' disabled' : '';
+    }),
+
     loadingLabels: false,
+    loadingGovernments: false,
     loadingDocuments: false,
 
     filteredLabels: Ember.computed('label_type', function(){
@@ -124,25 +122,21 @@ export default Ember.Controller.extend({
         selectKind(kind) {
             console.log('selectKind('+kind+')');
             this.set('kind', kind);
-            Ember.$('#kind option:contains("Select")').remove();
             this._showValues();
         },
         selectPlan(plan) {
             console.log('selectPlan('+plan+')');
             this.set('plan', plan);
-            Ember.$('#plan option:contains("Select")').remove();
             this._showValues();
         },
         selectDirection(direction) {
             console.log('selectDirection('+direction+')');
             this.set('direction', direction);
-            Ember.$('#direction option:contains("Select")').remove();
             this._showValues();
         },
         selectOrder(order) {
             console.log('selectOrder('+order+')');
             this.set('order', order);
-            Ember.$('#order option:contains("Select")').remove();
             this._showValues();
         },
         selectLimit(limit) {
@@ -153,17 +147,15 @@ export default Ember.Controller.extend({
         selectLabel(n) {
             console.log('selectLabel('+n+')');
             this.set('label', this.get('labels')[n]);
-            Ember.$('#label option:contains("Select")').remove();
             this._showValues();
         },
         selectLabelType(label_type) {
             console.log('selectLabelType('+label_type+')');
             this.set('label_type', label_type);
-            Ember.$('#label_type option:contains("Select")').remove();
             this._showValues();
         },
 
-        submit() {
+        getLabels() {
             this._showValues();
             let year = parseInt(this.get('year')),
                 period = parseInt(this.get('period')),
@@ -172,7 +164,8 @@ export default Ember.Controller.extend({
                 direction = this.get('direction'),
                 // order = this.get('order'),
                 limit = parseInt(this.get('limit')),
-                url_documents = 'http://www.openspending.nl/api/v1/documents/' +
+                apiUrl = this.get('apiUrl'),
+                url_docs = apiUrl + '/documents/' +
                 '?government__kind=' + kind +
                 (year ? '&year=' + year : '') +
                 '&period=' + period +
@@ -181,12 +174,12 @@ export default Ember.Controller.extend({
                 '&limit=' + limit +
                 '&format=json';
 
-            console.log('url_documents', url_documents);
+            console.log('url_docs', url_docs);
             this.set('loadingLabels', true);
-            Ember.$.get(url_documents).then (
+            Ember.$.get(url_docs).then (
                 data => {
-                    console.log('url_documents data', data);
-                    let url_labels = 'http://www.openspending.nl/api/v1/labels/' +
+                    console.log('url_docs data', data);
+                    let url_labels = apiUrl + '/labels/' +
                         '?document_id=' + data.objects[0].id +
                         '&limit=500' +
                         '&format=json';
@@ -263,6 +256,48 @@ export default Ember.Controller.extend({
             );
         },
 
+        getGovernments() {
+            let kind = this.get('kind'),
+                apiUrl = this.get('apiUrl'),
+                url_govs = apiUrl + '/governments/' + '' +
+                '?kind=' + kind +
+                '&limit=0' +
+                '&format=json';
+            console.log('getGovernments() url_govs='+url_govs);
+            this.set('loadingGovernments', true);
+            Ember.$.get(url_govs).then (
+                data => {
+                    let governments = [];
+                    console.log('url_govs data', data);
+                    data.objects.forEach( gov => {
+                        governments.push({
+                            code: gov.code,
+                            country: gov.country,
+                            display_kind: gov.display_kind,
+                            id: gov.id,
+                            intro: gov.intro,
+                            kind: gov.kind,
+                            lat: gov.lat,
+                            location: gov.location,
+                            lon: gov.lon,
+                            // metrics: gov.metrics,
+                            name: gov.name,
+                            resource_uri: gov.resource_uri,
+                            slug: gov.slug,
+                            state: gov.state,
+                            website: gov.website,
+                        });
+                    });
+                    this.set('governments', governments);
+                    this.set('loadingGovernments', false);
+                },
+                error => {
+                    console.error(error);
+                    this.set('loadingGovernments', false);
+                }
+            );
+        },
+
         getDocuments() {
             let kind = this.get('kind'),
                 year = parseInt(this.get('year')),
@@ -273,14 +308,15 @@ export default Ember.Controller.extend({
                 normalisation = this.get('normalisation'),
                 order = this.get('order'),
                 size = parseInt(this.get('size')),
-                url_getdocs = 'http://www.openspending.nl/api/v1/documents/' +
+                apiUrl = this.get('apiUrl'),
+                url_docs = apiUrl + '/documents/' +
                     '?government__kind=' + kind +
                     (year ? '&year=' + year : '') +
                     '&period=' + period +
                     '&plan=' + plan +
                     '&limit=50' +
                     '&format=json',
-                url_entries = 'http://www.openspending.nl/api/v1/aggregations/entries/' +
+                url_entries = apiUrl + '/aggregations/entries/' +
                   '?type=' + plan +
                   (year ? '&year=' + year : '') +
                   '&period=' + period +
@@ -289,23 +325,23 @@ export default Ember.Controller.extend({
                   '&limit=1' +
                 '&format=json';
 
-            console.log('getDocuments() url_getdocs='+url_getdocs);
+            console.log('getDocuments() url_docs='+url_docs);
             console.log('getDocuments() url_entries='+url_entries);
 
             this.set('loadingDocuments', true);
             Ember.$.when(
-                Ember.$.get(url_getdocs),
+                Ember.$.get(url_docs),
                 Ember.$.get(url_entries),
             ).then(
                 (docs, entries) => {
-                    console.log('url_getdocs data', docs);
-                    console.log('url_getdocs entries', entries);
+                    console.log('url_docs data', docs);
+                    console.log('url_docs entries', entries);
 
                     let documents = {};
                     Ember.$.each(docs[0].objects, function (idx, item) {
                         documents[item.id] = item;
                     });
-                    console.log('url_getdocs documents='+JSON.stringify(documents));
+                    console.log('url_docs documents='+JSON.stringify(documents));
 
                     let results = [],
                         terms = entries[0].facets.document.terms;
@@ -318,11 +354,11 @@ export default Ember.Controller.extend({
                                 total: t.total,
                                 factor: this._get_metric_for(documents[t.term].government, normalisation, year)
                             };
-                            //console.log('url_getdocs h='+JSON.stringify(h));
+                            //console.log('url_docs h='+JSON.stringify(h));
                             results.push(h);
                         }
                     });
-                    console.log('url_getdocs results='+JSON.stringify(results));
+                    console.log('url_docs results='+JSON.stringify(results));
                     this._display_documents(this, results, plan, year, period, direction, label, order, size);
                     Ember.run.once(this, () => { this.set('loadingDocuments', false)});
                 },
@@ -355,7 +391,7 @@ export default Ember.Controller.extend({
             ', order=' + order +
             ', limit=' + limit +
             ', label_type=' + label_type +
-            ', label=' + label
+            ', label=' + JSON.stringify(label)
         );
     },
 
