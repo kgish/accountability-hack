@@ -259,7 +259,7 @@ export default Ember.Controller.extend({
         getGovernments() {
             let kind = this.get('kind'),
                 apiUrl = this.get('apiUrl'),
-                url_govs = apiUrl + '/governments/' + '' +
+                url_govs = apiUrl + '/governments' +
                 '?kind=' + kind +
                 '&limit=0' +
                 '&format=json';
