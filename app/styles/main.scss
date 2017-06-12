@@ -50,9 +50,20 @@ select {
   margin-right: 15px;
 }
 
+// ember-models-table addon
+
+.models-table-wrapper {
+  border: 1px solid lightgrey;
+  padding: 10px;
+}
+
 .models-table-wrapper,
 .models-table-wrapper select {
-  font-size: 1rem;
+  font-size: 0.8rem;
+}
+
+.global-filter-wrapper {
+  margin-bottom: 10px;
 }
 
 .form-group input {
@@ -62,5 +73,3 @@ select {
 .btn {
   margin: 5px;
 }
-
-

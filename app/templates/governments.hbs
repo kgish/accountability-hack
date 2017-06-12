@@ -1,16 +1,22 @@
 {{#page-header title='Governments' description='List of government bodies by kind'}}
     {{#if governments.length}}
-        <p>Found {{filteredGovernments.length}} {{plural-of kind kinds.length}}.</p>
-        <form>
-            <div class="form-group">
-                <label for="select-kind">Kind:</label>
-                {{#x-select value=kind id="select-kind" class="custom-select" action="selectKind" as |xs|}}
-                    {{#each kinds as |kind|}}
-                        {{#xs.option value=kind}}{{format-option kind}}{{/xs.option}}
-                    {{/each}}
-                {{/x-select}}
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 align-self-center">
+                <form>
+                    <div class="form-group">
+                        <label for="select-kind">Kind:</label>
+                        {{#x-select value=kind id="select-kind" class="custom-select" action="selectKind" as |xs|}}
+                            {{#each kinds as |kind|}}
+                                {{#xs.option value=kind}}{{format-option kind}}{{/xs.option}}
+                            {{/each}}
+                        {{/x-select}}
+                    </div>
+                </form>
             </div>
-        </form>
+            <div class="col-md-6 col-sm-6 col-xs-6 align-self-center">
+                <p class="pull-right">Found <strong>{{filteredGovernments.length}}</strong> {{plural-of kind kinds.length}}</p>
+            </div>
+        </div>
 
         {{models-table
             data=filteredGovernments
@@ -18,11 +24,9 @@
             columnsAreUpdateable=true
             filteringIgnoreCase=true
             showColumnsDropdown=false
-            showGlobalFilter=false
-            customIcons=icons
+            customIcons=customIcons
+            customClasses=customClasses
             simplePaginationTemplate="components/models-table/simple-pagination"
-            componentFooterTemplate="components/models-table/component-footer"
-            pageSizeTemplate="components/models-table/page-size"
 
         }}
     {{else}}

@@ -5,6 +5,9 @@ export function pluralOf(params/*, hash*/) {
         num = parseInt(params[0]),
         result = word;
 
+    if (word === 'all') {
+        word = 'government';
+    }
     if (num !== 1) {
         word = word.replace(/y$/, 'ie');
         result = word.replace(/$/, 's');

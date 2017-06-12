@@ -9,7 +9,7 @@ export default Ember.Route.extend({
 
     setupController(controller, data) {
         let governments = [],
-            kinds = [];
+            kinds = ['all'];
         data.objects.forEach(g => {
             if (kinds.indexOf(g.kind) === -1) {
                 kinds.push(g.kind)
