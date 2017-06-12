@@ -90,6 +90,27 @@ export default Ember.Controller.extend({
         return governments.filterBy('kind', this.get('kind'));
     }),
 
+    // Custom icons for the ember-models-table addon
+    icons: {
+        "sort-asc": "fa fa-caret-down",
+        "sort-desc": "fa fa-caret-up",
+        // "column-visible": "glyphicon glyphicon-check",
+        // "column-hidden": "glyphicon glyphicon-unchecked",
+        // "nav-first": "glyphicon glyphicon-chevron-left",
+        // "nav-prev": "glyphicon glyphicon-menu-left",
+        // "nav-next": "glyphicon glyphicon-menu-right",
+        // "nav-last": "glyphicon glyphicon-chevron-right",
+        // "caret": "icons-caret"
+        // "expand-row": "glyphicon glyphicon-plus",
+        // "expand-all-rows": "glyphicon glyphicon-plus",
+        // "collapse-row": "glyphicon glyphicon-minus",
+        // "collapse-all-rows": "glyphicon glyphicon-minus",
+        // "select-all-rows": "glyphicon glyphicon-check",
+        // "deselect-all-rows": "glyphicon glyphicon-unchecked",
+        // "select-row": "glyphicon glyphicon-check",
+        // "deselect-row": "glyphicon glyphicon-unchecked"
+    },
+
     actions: {
         selectKind(kind) {
             this.set('kind', kind);

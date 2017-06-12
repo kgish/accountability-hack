@@ -63,6 +63,10 @@ module.exports = function(environment) {
 
     if (environment === 'production') {
 
+        // Enable mirage to run on production server
+        ENV['ember-cli-mirage'] = {
+            enabled: true
+        }
     }
 
     return ENV;

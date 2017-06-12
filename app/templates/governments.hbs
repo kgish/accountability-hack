@@ -1,6 +1,6 @@
 {{#page-header title='Governments' description='List of government bodies by kind'}}
     {{#if governments.length}}
-        <p>Found {{governments.length}} {{plural-of kind kinds.length}}.</p>
+        <p>Found {{filteredGovernments.length}} {{plural-of kind kinds.length}}.</p>
         <form>
             <div class="form-group">
                 <label for="select-kind">Kind:</label>
@@ -19,6 +19,11 @@
             filteringIgnoreCase=true
             showColumnsDropdown=false
             showGlobalFilter=false
+            customIcons=icons
+            simplePaginationTemplate="components/models-table/simple-pagination"
+            componentFooterTemplate="components/models-table/component-footer"
+            pageSizeTemplate="components/models-table/page-size"
+
         }}
     {{else}}
         <p>No governments found.</p>
