@@ -26,13 +26,18 @@ module.exports = function(environment) {
         apiHost: 'http://www.openspending.nl',
         apiNamespace: 'api/v1',
 
+        googleFonts: [
+            'Open+Sans:300,400,700',
+            'Roboto:300'
+        ],
+
         contentSecurityPolicy: {
             'default-src': "'none'",
             'script-src': "'self'",
-            'font-src': "'self'",
+            'font-src': "'self' fonts.gstatic.com",
             'connect-src': "'self' http://www.openspending.nl/",
             'img-src': "'self'",
-            'style-src': "'self'",
+            'style-src': "'self' fonts.googleapis.com",
             'media-src': "'self'"
         }
     };

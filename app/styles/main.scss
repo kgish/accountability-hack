@@ -6,12 +6,14 @@ body {
 body {
   background: #ddd;
   padding-top: 5rem;
+  font-size: 1rem;
 }
 
 .application.data button {
   margin-right: 10px;
 }
 
+.application.governments .container,
 .application.demo .container {
   width: auto;
 }
@@ -46,4 +48,13 @@ body {
 select {
   margin-left: 5px;
   margin-right: 15px;
+}
+
+.models-table-wrapper,
+.models-table-wrapper select {
+  font-size: 1rem;
+}
+
+.form-group input {
+  margin-left: 10px;
 }
