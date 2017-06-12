@@ -28,6 +28,7 @@ export default Ember.Controller.extend({
             list = [{
                 name: 'all',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "kind",     title: "Kind" },
                     { propertyName: "name",     title: "Name" },
@@ -39,6 +40,7 @@ export default Ember.Controller.extend({
             {
                 name: 'county',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "state",    title: "State", filterWithSelect: true }
@@ -47,6 +49,7 @@ export default Ember.Controller.extend({
             {
                 name: 'benchmark',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "intro",    title: "Intro" },
                     { propertyName: "location", title: "Location", filterWithSelect: true }
@@ -55,6 +58,7 @@ export default Ember.Controller.extend({
             {
                 name: 'municipal_arrangement',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "location", title: "Location" },
@@ -64,6 +68,7 @@ export default Ember.Controller.extend({
             {
                 name: 'province',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "state",    title: "State" }
@@ -72,6 +77,7 @@ export default Ember.Controller.extend({
             {
                 name: 'subcounty',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "state",    title: "State" }
@@ -80,6 +86,7 @@ export default Ember.Controller.extend({
             {
                 name: 'watership',
                 columns: [
+                    { propertyName: "id",       title: "Id" },
                     { propertyName: "code",     title: "Code" },
                     { propertyName: "name",     title: "Name" },
                     { propertyName: "state",    title: "State" }
@@ -89,6 +96,10 @@ export default Ember.Controller.extend({
         let found = list.findBy('name', kind);
         if (found) {
             columns = found.columns;
+            columns.push({
+                title: "",
+                template: "components/models-table/show-record"
+            })
         } else {
            console.error('Cannot find columns for kind='+kind);
         }
@@ -172,6 +183,10 @@ export default Ember.Controller.extend({
     actions: {
         selectKind(kind) {
             this.set('kind', kind);
+        },
+        showRecord(record) {
+            console.log(record);
+            this.transitionToRoute('governments.show', record);
         }
     }
 });

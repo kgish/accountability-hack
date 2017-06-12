@@ -50,16 +50,23 @@ select {
   margin-right: 15px;
 }
 
-// ember-models-table addon
+// Styling for the ember-models-table addon
+
+$models-table-font-size: 0.8rem;
 
 .models-table-wrapper {
   border: 1px solid lightgrey;
   padding: 10px;
+
+  table > thead > tr:nth-child(1) > th:nth-child(1) {
+    width: 75px;
+  }
 }
 
 .models-table-wrapper,
-.models-table-wrapper select {
-  font-size: 0.8rem;
+.models-table-wrapper select,
+.models-table-wrapper input {
+  font-size: $models-table-font-size;
 }
 
 .global-filter-wrapper {
@@ -72,4 +79,5 @@ select {
 
 .btn {
   margin: 5px;
+  font-size: $models-table-font-size;
 }

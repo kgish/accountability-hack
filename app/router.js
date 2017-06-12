@@ -12,7 +12,11 @@ Router.map(function() {
     this.route('contact');
     this.route('credits');
     this.route('demo');
-    this.route('governments');
+    this.route('governments', function(){
+        this.route('show', {
+            path: ':government_id'
+        });
+    });
 });
 
 export default Router;
